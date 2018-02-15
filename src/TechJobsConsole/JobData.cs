@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace TechJobsConsole
@@ -24,9 +23,13 @@ namespace TechJobsConsole
         {
             LoadData();
 
+            Dictionary<string, string>[] jobsCopy = new Dictionary<string, string>[AllJobs.Count];
+
+            AllJobs.CopyTo(jobsCopy);
+
             List<string> values = new List<string>();
 
-            foreach (Dictionary<string, string> job in AllJobs)
+            foreach (Dictionary<string, string> job in jobsCopy)
             {
                 string aValue = job[column];
 
@@ -49,9 +52,33 @@ namespace TechJobsConsole
             {
                 string aValue = row[column];
 
-                if (aValue.Contains(value))
+                if (aValue.ToLower().Contains(value.ToLower()))
                 {
                     jobs.Add(row);
+
+                }
+            }
+
+            return jobs;
+        }
+
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> job in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> j in job)
+                {
+                    if (j.Value.ToLower().Contains(value.ToLower()))
+                    {
+                        if (jobs.IndexOf(job) < 0)
+                        {
+                            jobs.Add(job);
+                        }
+                    }
                 }
             }
 
